@@ -2576,6 +2576,25 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
             }},
         ])
 
+    def test__add_fields(self):
+        self.cmp.compare.aggregate([{'$addFields': {'c': 3}}])
+        self.cmp.compare.aggregate([{'$addFields': {'c': 4}}])
+        self.cmp.compare.aggregate([{'$addFields': {'b': {'$add': ['$a', '$b', 5]}}}])
+
+    def test__add_fields_with_missing_fields(self):
+        self.cmp.do.remove()
+
+        data = [
+            {'a': 0},
+            {}
+        ]
+        self.cmp.do.insert(data)
+
+        pipeline = [
+            {'$addFields': {'b': '$a'}},
+        ]
+        self.cmp.compare_ignore_order.aggregate(pipeline)
+
     def test__aggregate_filter(self):
         self.cmp.do.drop()
         self.cmp.do.insert_many([

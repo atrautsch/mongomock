@@ -908,8 +908,18 @@ def _handle_count_stage(in_collection, database, options):
     return [{options: len(in_collection)}]
 
 
+def _handle_add_fields_stage(in_collection, unused_database, options):
+    for doc in in_collection:
+        for key, value in options.items():
+            try:
+                doc[key] = _parse_expression(value, doc)
+            except KeyError:
+                pass
+    return in_collection
+
+
 _PIPELINE_HANDLERS = {
-    '$addFields': None,
+    '$addFields': _handle_add_fields_stage,
     '$bucket': _handle_bucket_stage,
     '$bucketAuto': None,
     '$collStats': None,
