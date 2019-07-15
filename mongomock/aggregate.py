@@ -915,7 +915,7 @@ def _handle_add_fields_stage(in_collection, unused_database, options):
     for doc in in_collection:
         for key, value in options.items():
             try:
-                doc[key] = _parse_expression(value, doc)
+                doc[key] = _parse_expression(value, doc, ignore_missing_keys=True)
             except KeyError:
                 pass
     return in_collection
