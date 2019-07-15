@@ -224,7 +224,10 @@ class _Parser(object):
             return math.sqrt(self.parse(values))
         if operator == '$subtract':
             assert len(values) == 2, 'subtract must have only 2 items'
-            res = self.parse(values[0]) - self.parse(values[1])
+            if self._ignore_missing_keys and None in [self.parse(values[0]), self.parse(values[1])]:
+                res = 0
+            else:
+                res = self.parse(values[0]) - self.parse(values[1])
             if isinstance(res, datetime.timedelta):
                 return round(res.total_seconds() * 1000)
             return res
